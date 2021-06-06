@@ -138,7 +138,7 @@
 // for timer info max values which include all bits
 #define ALL_64_BITS CONST64(0xFFFFFFFFFFFFFFFF)
 
-#ifdef MUSL_LIBC
+#if defined(MUSL_LIBC) || defined(__ANDROID__)
 // dlvsym is not a part of POSIX
 // and musl libc doesn't implement it.
 static void *dlvsym(void *handle,
@@ -573,6 +573,7 @@ extern "C" void breakpoint() {
 // detecting pthread library
 
 void os::Linux::libpthread_init() {
+#ifndef __ANDROID__
   // Save glibc and pthread version strings.
 #if !defined(_CS_GNU_LIBC_VERSION) || \
     !defined(_CS_GNU_LIBPTHREAD_VERSION)
@@ -596,6 +597,9 @@ void os::Linux::libpthread_init() {
   str = (char *)malloc(n, mtInternal);
   confstr(_CS_GNU_LIBPTHREAD_VERSION, str, n);
   os::Linux::set_libpthread_version(str);
+#endif
+#else
+  os::Linux::set_libpthread_version("NPTL");
 #endif
 }
 
