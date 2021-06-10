@@ -680,16 +680,17 @@ Java_sun_nio_fs_UnixNativeDispatcher_futimes0(JNIEnv* env, jclass this, jint fil
     jlong accessTime, jlong modificationTime)
 {
     struct timeval times[2];
+    struct timespec times2[2];
     int err = 0;
 
-    times[0].tv_sec = accessTime / 1000000;
+    times[0].tv_sec = times2[0].tv_sec = accessTime / 1000000;
     times[0].tv_usec = accessTime % 1000000;
 
-    times[1].tv_sec = modificationTime / 1000000;
+    times[1].tv_sec = times2[1].tv_sec = modificationTime / 1000000;
     times[1].tv_usec = modificationTime % 1000000;
 
-    times[0].tv_nsec = (accessTime % 1000000) * 1000;
-    times[1].tv_nsec = (modificationTime % 1000000) * 1000;
+    times2[0].tv_nsec = times[0].tv_usec * 1000;
+    times2[1].tv_nsec = times[1].tv_usec * 1000;
 
 #ifdef _ALLBSD_SOURCE
     RESTARTABLE(futimes(filedes, &times[0]), err);
@@ -701,7 +702,7 @@ Java_sun_nio_fs_UnixNativeDispatcher_futimes0(JNIEnv* env, jclass this, jint fil
     if (my_futimesat_func != NULL) {
         RESTARTABLE((*my_futimesat_func)(filedes, NULL, &times[0]), err);
     } else {
-        RESTARTABLE((*my_utimensat_func)(filedes, NULL, &times[0], 0), err);
+        RESTARTABLE((*my_utimensat_func)(filedes, NULL, &times2[0], 0), err);
     }
 #endif
     if (err == -1) {
