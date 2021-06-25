@@ -182,6 +182,8 @@ static int clock_tics_per_sec = 100;
 // avoid this
 static bool suppress_primordial_thread_resolution = false;
 
+static bool read_so_path_from_maps(const char* so_name, char* buf, int buflen);
+
 // utility functions
 
 julong os::available_memory() {
@@ -1524,6 +1526,30 @@ bool os::dll_address_to_library_name(address addr, char* buf,
   return false;
 }
 
+static bool read_so_path_from_maps(const char* so_name, char* buf, int buflen) {
+  FILE *fp = fopen("/proc/self/maps", "r");
+  assert(fp, "Failed to open /proc/self/maps");
+  if (!fp) {
+    return false;
+  }
+
+  char maps_buffer[2048];
+  while (fgets(maps_buffer, 2048, fp) != NULL) {
+    if (strstr(maps_buffer, so_name) == NULL) {
+      continue;
+    }
+
+    char *so_path = strchr(maps_buffer, '/');
+    so_path[strlen(so_path) - 1] = '\0'; // Cut trailing \n
+    jio_snprintf(buf, buflen, "%s", so_path);
+    fclose(fp);
+    return true;
+  }
+
+  fclose(fp);
+  return false;
+}
+
 // Loads .dll/.so and
 // in case of error it checks if .dll/.so was built for the
 // same architecture as Hotspot is running on
@@ -2545,6 +2571,19 @@ void os::jvm_path(char *buf, jint buflen) {
                                          CAST_FROM_FN_PTR(address, os::jvm_path),
                                          dli_fname, sizeof(dli_fname), NULL);
   assert(ret, "cannot locate libjvm");
+#ifdef __ANDROID__
+  if (dli_fname[0] == '\0') {
+    return;
+  }
+
+  if (strchr(dli_fname, '/') == NULL) {
+    bool ok = read_so_path_from_maps(dli_fname, buf, buflen);
+    assert(ok, "unable to turn relative libjvm.so path into absolute");
+    return;
+  }
+
+  snprintf(buf, buflen, /* "%s/lib/%s/server/%s", java_home_var, cpu_arch, */ "%s", dli_fname);
+#else // !__ANDROID__
   char *rp = NULL;
   if (ret && dli_fname[0] != '\0') {
     rp = os::Posix::realpath(dli_fname, buf, buflen);
@@ -2610,6 +2649,7 @@ void os::jvm_path(char *buf, jint buflen) {
       }
     }
   }
+#endif
 
   strncpy(saved_jvm_path, buf, MAXPATHLEN);
   saved_jvm_path[MAXPATHLEN - 1] = '\0';
