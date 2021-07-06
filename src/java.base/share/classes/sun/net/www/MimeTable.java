@@ -57,9 +57,8 @@ public class MimeTable implements FileNameMap {
                 mailcapLocations = new String[] {
                     System.getProperty("user.mailcap"),
                     StaticProperty.userHome() + "/.mailcap",
-                    "/etc/mailcap",
-                    "/usr/etc/mailcap",
-                    "/usr/local/etc/mailcap",
+                    "@TERMUX_PREFIX@/etc/mailcap",
+                    "@TERMUX_PREFIX@/local/etc/mailcap",
                 };
                 return null;
             }

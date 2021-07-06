@@ -81,10 +81,10 @@ public class PrintServiceLookupProvider extends PrintServiceLookup
 
     // List of commands used to deal with the printer queues on AIX
     String[] lpNameComAix = {
-      "/usr/bin/lsallq",
-      "/usr/bin/lpstat -W -p|/usr/bin/expand|/usr/bin/cut -f1 -d' '",
-      "/usr/bin/lpstat -W -d|/usr/bin/expand|/usr/bin/cut -f1 -d' '",
-      "/usr/bin/lpstat -W -v"
+      "@TERMUX_PREFIX@/bin/lsallq",
+      "@TERMUX_PREFIX@/bin/lpstat -W -p|@TERMUX_PREFIX@/bin/expand|@TERMUX_PREFIX@/bin/cut -f1 -d' '",
+      "@TERMUX_PREFIX@/bin/lpstat -W -d|@TERMUX_PREFIX@/bin/expand|@TERMUX_PREFIX@/bin/cut -f1 -d' '",
+      "@TERMUX_PREFIX@/bin/lpstat -W -v"
     };
     private static final int aix_lsallq = 0;
     private static final int aix_lpstat_p = 1;
@@ -172,13 +172,13 @@ public class PrintServiceLookupProvider extends PrintServiceLookup
     static int cmdIndex = UNINITIALIZED;
 
     String[] lpcFirstCom = {
-        "/usr/sbin/lpc status | grep : | sed -ne '1,1 s/://p'",
-        "/usr/sbin/lpc status | grep -E '^[ 0-9a-zA-Z_-]*@' | awk -F'@' '{print $1}'"
+        "@TERMUX_PREFIX@/bin/lpc status | grep : | sed -ne '1,1 s/://p'",
+        "@TERMUX_PREFIX@/bin/lpc status | grep -E '^[ 0-9a-zA-Z_-]*@' | awk -F'@' '{print $1}'"
     };
 
     String[] lpcAllCom = {
-        "/usr/sbin/lpc status all | grep : | sed -e 's/://'",
-        "/usr/sbin/lpc status all | grep -E '^[ 0-9a-zA-Z_-]*@' | awk -F'@' '{print $1}' | sort"
+        "@TERMUX_PREFIX@/bin/lpc status all | grep : | sed -e 's/://'",
+        "@TERMUX_PREFIX@/bin/lpc status all | grep -E '^[ 0-9a-zA-Z_-]*@' | awk -F'@' '{print $1}' | sort"
     };
 
     String[] lpcNameCom = {
@@ -188,7 +188,7 @@ public class PrintServiceLookupProvider extends PrintServiceLookup
 
 
     static int getBSDCommandIndex() {
-        String command  = "/usr/sbin/lpc status all";
+        String command  = "@TERMUX_PREFIX@/bin/lpc status all";
         String[] names = execCmd(command);
 
         if ((names == null) || (names.length == 0)) {
@@ -757,7 +757,7 @@ public class PrintServiceLookupProvider extends PrintServiceLookup
       if (cmdIndex == UNINITIALIZED) {
         cmdIndex = getBSDCommandIndex();
       }
-      String command = "/usr/sbin/lpc status " + name + lpcNameCom[cmdIndex];
+      String command = "@TERMUX_PREFIX@/bin/lpc status " + name + lpcNameCom[cmdIndex];
       String[] result = execCmd(command);
 
       if (result == null || !(result[0].equals(name))) {
@@ -779,7 +779,7 @@ public class PrintServiceLookupProvider extends PrintServiceLookup
 
     static String getDefaultPrinterNameSysV() {
         String defaultPrinter = "lp";
-        String command = "/usr/bin/lpstat -d";
+        String command = "@TERMUX_PREFIX@/bin/lpstat -d";
 
         String [] names = execCmd(command);
         if (names == null || names.length == 0) {
@@ -801,7 +801,7 @@ public class PrintServiceLookupProvider extends PrintServiceLookup
 
     private PrintService getNamedPrinterNameSysV(String name) {
 
-        String command = "/usr/bin/lpstat -v " + name;
+        String command = "@TERMUX_PREFIX@/bin/lpstat -v " + name;
         String []result = execCmd(command);
 
         if (result == null || result[0].indexOf("unknown printer") > 0) {
@@ -813,7 +813,7 @@ public class PrintServiceLookupProvider extends PrintServiceLookup
 
     private String[] getAllPrinterNamesSysV() {
         String defaultPrinter = "lp";
-        String command = "/usr/bin/lpstat -v|/usr/bin/expand|/usr/bin/cut -f3 -d' ' |/usr/bin/cut -f1 -d':' | /usr/bin/sort";
+        String command = "@TERMUX_PREFIX@/bin/lpstat -v|@TERMUX_PREFIX@/bin/expand|@TERMUX_PREFIX@/bin/cut -f3 -d' ' |@TERMUX_PREFIX@/bin/cut -f1 -d':' | @TERMUX_PREFIX@/bin/sort";
 
         String [] names = execCmd(command);
         ArrayList<String> printerNames = new ArrayList<>();
@@ -870,7 +870,7 @@ public class PrintServiceLookupProvider extends PrintServiceLookup
         try {
             final String[] cmd = new String[3];
             if (isAIX()) {
-                cmd[0] = "/usr/bin/sh";
+                cmd[0] = "@TERMUX_PREFIX@/bin/sh";
                 cmd[1] = "-c";
                 cmd[2] = "env LC_ALL=C " + command;
             } else {

@@ -600,7 +600,7 @@ public class FileCredentialsCache extends CredentialsCache
                     (new InputStreamReader(p.getInputStream(), ISO_8859_1));
             String s1 = null;
             if ((command.length == 1) &&
-                (command[0].equals("/usr/bin/env"))) {
+                (command[0].equals("@TERMUX_PREFIX@/bin/env"))) {
                 while ((s1 = commandResult.readLine()) != null) {
                     if (s1.length() >= 11) {
                         if ((s1.substring(0, 11)).equalsIgnoreCase

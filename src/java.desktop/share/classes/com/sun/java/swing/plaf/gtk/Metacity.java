@@ -482,13 +482,10 @@ class Metacity implements SynthConstants {
                 String[] dirs = new String[] {
                     userHome + sep + ".themes",
                     System.getProperty("swing.metacitythemedir"),
-                    "/usr/X11R6/share/themes",
-                    "/usr/X11R6/share/gnome/themes",
-                    "/usr/local/share/themes",
-                    "/usr/local/share/gnome/themes",
-                    "/usr/share/themes",
-                    "/usr/gnome/share/themes",  // Debian/Redhat/Solaris
-                    "/opt/gnome2/share/themes"  // SuSE
+                    "@TERMUX_PREFIX@/share/themes",
+                    "@TERMUX_PREFIX@/share/gnome/themes",
+                    "@TERMUX_PREFIX@/local/share/themes",
+                    "@TERMUX_PREFIX@/local/share/gnome/themes",
                 };
 
                 URL themeDir = null;

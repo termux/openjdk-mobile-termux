@@ -104,7 +104,7 @@ class LinuxFileSystemProvider extends UnixFileSystemProvider {
     FileTypeDetector getFileTypeDetector() {
         String userHome = StaticProperty.userHome();
         Path userMimeTypes = Path.of(userHome, ".mime.types");
-        Path etcMimeTypes = Path.of("/etc/mime.types");
+        Path etcMimeTypes = Path.of("@TERMUX_PREFIX@/etc/mime.types");
 
         return chain(new MimeTypesFileTypeDetector(userMimeTypes),
                      new MimeTypesFileTypeDetector(etcMimeTypes));

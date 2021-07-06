@@ -92,7 +92,7 @@ _uninstall_default_mime_handler ()
 #
 uninstall_default_mime_handler ()
 {
-  for f in /usr/share/applications/defaults.list /usr/local/share/applications/defaults.list; do
+  for f in @TERMUX_PREFIX@/share/applications/defaults.list @TERMUX_PREFIX@/local/share/applications/defaults.list; do
     _uninstall_default_mime_handler "$f" "$@"
   done
 }

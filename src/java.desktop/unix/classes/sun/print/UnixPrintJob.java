@@ -882,7 +882,7 @@ public class UnixPrintJob implements CancelablePrintJob {
             ncomps+=1;
         }
         execCmd = new String[ncomps];
-        execCmd[n++] = "/usr/bin/lpr";
+        execCmd[n++] = "@TERMUX_PREFIX@/bin/lpr";
         if ((pFlags & PRINTER) != 0) {
             execCmd[n++] = "-P" + printer;
         }

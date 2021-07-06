@@ -1383,7 +1383,13 @@ const char* os::dll_file_extension() { return ".so"; }
 
 // This must be hard coded because it's the system's temporary
 // directory not the java application's temp directory, ala java.io.tmpdir.
-const char* os::get_temp_directory() { return "/tmp"; }
+const char* os::get_temp_directory() {
+#ifndef __ANDROID__
+  return "/tmp";
+#else
+  return "@TERMUX_PREFIX@/tmp";
+#endif
+}
 
 static bool file_exists(const char* filename) {
   struct stat statbuf;
@@ -2239,7 +2245,7 @@ void os::Linux::print_process_memory_info(outputStream* st) {
 }
 
 bool os::Linux::print_ld_preload_file(outputStream* st) {
-  return _print_ascii_file("/etc/ld.so.preload", st, "/etc/ld.so.preload:");
+  return _print_ascii_file("@TERMUX_PREFIX@/etc/ld.so.preload", st, "@TERMUX_PREFIX@/etc/ld.so.preload:");
 }
 
 void os::Linux::print_uptime_info(outputStream* st) {
