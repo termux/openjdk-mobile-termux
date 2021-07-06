@@ -414,7 +414,7 @@ public class LinuxDebBundler extends LinuxPackageBundler {
         final String installDir = LINUX_INSTALL_DIR.fetchFrom(params);
 
         if (!StandardBundlerParam.isRuntimeInstaller(params)
-                || (isInstallDirInUsrTree(installDir) || installDir.startsWith("/usr/"))) {
+                || (isInstallDirInUsrTree(installDir) || installDir.startsWith("@TERMUX_PREFIX@/"))) {
             debianFiles.add(new DebianFile(
                     getConfig_CopyrightFile(params),
                     "resource.copyright-file"));
@@ -446,8 +446,8 @@ public class LinuxDebBundler extends LinuxPackageBundler {
         final String packageName = PACKAGE_NAME.fetchFrom(params);
 
         final Path installPath;
-        if (isInstallDirInUsrTree(installDir) || installDir.startsWith("/usr/")) {
-            installPath = Path.of("/usr/share/doc/", packageName, "copyright");
+        if (isInstallDirInUsrTree(installDir) || installDir.startsWith("@TERMUX_PREFIX@/")) {
+            installPath = Path.of("@TERMUX_PREFIX@/share/doc/", packageName, "copyright");
         } else {
             installPath = Path.of(installDir, packageName, "share/doc/copyright");
         }

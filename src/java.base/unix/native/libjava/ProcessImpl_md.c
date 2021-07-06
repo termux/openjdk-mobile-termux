@@ -230,7 +230,7 @@ xmalloc(JNIEnv *env, size_t size)
 static const char*
 defaultPath(void)
 {
-    return ":/bin:/usr/bin";
+    return ":@TERMUX_PREFIX@/bin";
 }
 
 static const char*

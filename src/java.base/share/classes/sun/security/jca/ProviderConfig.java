@@ -98,7 +98,7 @@ final class ProviderConfig {
         Boolean o = AccessController.doPrivileged(
                                 new PrivilegedAction<Boolean>() {
             public Boolean run() {
-                File file = new File("/usr/lib/libpkcs11.so");
+                File file = new File("@TERMUX_PREFIX@/lib/libpkcs11.so");
                 if (file.exists() == false) {
                     return Boolean.FALSE;
                 }

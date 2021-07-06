@@ -182,7 +182,7 @@ class FileSystemPreferences extends AbstractPreferences {
         AccessController.doPrivileged(new PrivilegedAction<Void>() {
             public Void run() {
                 String systemPrefsDirName =
-                  System.getProperty("java.util.prefs.systemRoot","/etc/.java");
+                  System.getProperty("java.util.prefs.systemRoot","@TERMUX_PREFIX@/etc/.java");
                 systemRootDir =
                      new File(systemPrefsDirName, ".systemPrefs");
                 // Attempt to create root dir if it does not yet exist.

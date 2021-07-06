@@ -53,7 +53,7 @@ typedef struct symtab {
 // should be possible to change this, but in a Java environment there
 // is no obvious place to put a user interface to do it.  Maybe this
 // could be set with an environment variable.
-static const char debug_file_directory[] = "/usr/lib/debug";
+static const char debug_file_directory[] = "@TERMUX_PREFIX@/lib/debug";
 
 /* The CRC used in gnu_debuglink, retrieved from
    http://sourceware.org/gdb/current/onlinedocs/gdb/Separate-Debug-Files.html#Separate-Debug-Files. */

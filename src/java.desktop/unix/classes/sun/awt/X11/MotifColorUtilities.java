@@ -412,7 +412,7 @@ class MotifColorUtilities {
         if (!pFile.exists())
         {
             // Must be a system palette
-            paletteFilePath = "/usr/dt/palettes/" + paletteFile;
+            paletteFilePath = "@TERMUX_PREFIX@/dt/palettes/" + paletteFile;
             pFile = new File(paletteFilePath);
             if (!pFile.exists())
             {
