@@ -934,7 +934,7 @@ public class Config {
         } else if (OperatingSystem.isMacOS()) {
             name = findMacosConfigFile();
         } else {
-            name =  "/etc/krb5.conf";
+            name =  "@TERMUX_PREFIX@/etc/krb5.conf";
         }
         if (DEBUG) {
             System.out.println("Native config name: " + name);

@@ -685,11 +685,11 @@ public final class SoftSynthesizer implements AudioSynthesizer,
 
                         File[] systemSoundFontsDir = new File[] {
                             /* Arch, Fedora, Mageia */
-                            new File("/usr/share/soundfonts/"),
-                            new File("/usr/local/share/soundfonts/"),
+                            new File("@TERMUX_PREFIX@/share/soundfonts/"),
+                            new File("@TERMUX_PREFIX@/local/share/soundfonts/"),
                             /* Debian, Gentoo, OpenSUSE, Ubuntu */
-                            new File("/usr/share/sounds/sf2/"),
-                            new File("/usr/local/share/sounds/sf2/"),
+                            new File("@TERMUX_PREFIX@/share/sounds/sf2/"),
+                            new File("@TERMUX_PREFIX@/local/share/sounds/sf2/"),
                         };
 
                         /*

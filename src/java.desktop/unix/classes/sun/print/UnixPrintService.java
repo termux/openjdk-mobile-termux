@@ -228,7 +228,7 @@ public class UnixPrintService implements PrintService, AttributeUpdater,
                 PrintServiceLookupProvider.getBSDCommandIndex();
         }
 
-        String command = "/usr/sbin/lpc status " + printer
+        String command = "@TERMUX_PREFIX@/bin/lpc status " + printer
             + lpcStatusCom[PrintServiceLookupProvider.cmdIndex];
         String[] results= PrintServiceLookupProvider.execCmd(command);
 
@@ -277,7 +277,7 @@ public class UnixPrintService implements PrintService, AttributeUpdater,
 
     private PrinterIsAcceptingJobs getPrinterIsAcceptingJobsAIX() {
         // On AIX there should not be a blank after '-a'.
-        String command = "/usr/bin/lpstat -a" + printer;
+        String command = "@TERMUX_PREFIX@/bin/lpstat -a" + printer;
         String[] results= PrintServiceLookupProvider.execCmd(command);
 
         // Remove headers and bogus entries added by remote printers.
@@ -333,7 +333,7 @@ public class UnixPrintService implements PrintService, AttributeUpdater,
         }
 
         int qlen = 0;
-        String command = "/usr/sbin/lpc status " + printer
+        String command = "@TERMUX_PREFIX@/bin/lpc status " + printer
             + lpcQueueCom[PrintServiceLookupProvider.cmdIndex];
         String[] results = PrintServiceLookupProvider.execCmd(command);
 
@@ -362,7 +362,7 @@ public class UnixPrintService implements PrintService, AttributeUpdater,
 
     private QueuedJobCount getQueuedJobCountAIX() {
         // On AIX there should not be a blank after '-a'.
-        String command = "/usr/bin/lpstat -a" + printer;
+        String command = "@TERMUX_PREFIX@/bin/lpstat -a" + printer;
         String[] results=  PrintServiceLookupProvider.execCmd(command);
 
         // Remove headers and bogus entries added by remote printers.

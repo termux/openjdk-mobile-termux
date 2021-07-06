@@ -337,7 +337,7 @@ abstract class LinuxPackageBundler extends AbstractBundler {
     }
 
     protected static boolean isInstallDirInUsrTree(String installDir) {
-        return Set.of("/usr/local", "/usr").contains(installDir);
+        return Set.of("@TERMUX_PREFIX@/local", "@TERMUX_PREFIX@").contains(installDir);
     }
 
     private final BundlerParamInfo<String> packageName;
@@ -381,7 +381,7 @@ abstract class LinuxPackageBundler extends AbstractBundler {
                      }
                      return dir;
                  }
-                 return "/opt";
+                 return "@TERMUX_PREFIX@/opt";
              },
             (s, p) -> s
     );

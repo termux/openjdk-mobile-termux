@@ -124,7 +124,7 @@ class LinuxFileSystem extends UnixFileSystem {
      */
     @Override
     List<UnixMountEntry> getMountEntries() {
-        return getMountEntries("/etc/mtab");
+        return getMountEntries("@TERMUX_PREFIX@/etc/mtab");
     }
 
     @Override

@@ -52,7 +52,7 @@ void VirtualizationSupport::initialize() {
     // the open-vm-tools have a different guest lib name
     // on some distros e.g. SLES12 the open-vm-tools are the default,
     // so use the different libname as a fallback
-    dlHandle = os::dll_load("/usr/lib64/libguestlib.so.0", ebuf, sizeof ebuf);
+    dlHandle = os::dll_load("@TERMUX_PREFIX@/lib/libguestlib.so.0", ebuf, sizeof ebuf);
   }
 #endif
   if (dlHandle == nullptr) {
