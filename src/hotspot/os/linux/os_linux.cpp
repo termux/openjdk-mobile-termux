@@ -138,7 +138,7 @@
 // for timer info max values which include all bits
 #define ALL_64_BITS CONST64(0xFFFFFFFFFFFFFFFF)
 
-#if defined(MUSL_LIBC) || defined(__ANDROID__)
+#if defined(MUSL_LIBC) || (defined(__ANDROID__) && __ANDROID_API__ < 24)
 // dlvsym is not a part of POSIX
 // and musl libc doesn't implement it.
 static void *dlvsym(void *handle,
