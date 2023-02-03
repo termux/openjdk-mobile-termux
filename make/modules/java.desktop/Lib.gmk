@@ -76,8 +76,6 @@ ifeq ($(call isTargetOs, aix), false)
 
   $(BUILD_LIBJSOUND): $(call FindLib, java.base, java)
 
-  TARGETS += $(BUILD_LIBJSOUND)
-
 endif
 
 ################################################################################
