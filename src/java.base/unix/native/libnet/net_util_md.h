@@ -26,7 +26,7 @@
 #ifndef NET_UTILS_MD_H
 #define NET_UTILS_MD_H
 
-#ifdef ANDROID
+#ifdef __ANDROID__
 #include <netinet/in.h>
 #endif
 #include <netdb.h>
