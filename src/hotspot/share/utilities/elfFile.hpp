@@ -46,7 +46,7 @@ typedef Elf64_Shdr      Elf_Shdr;
 typedef Elf64_Phdr      Elf_Phdr;
 typedef Elf64_Sym       Elf_Sym;
 
-#if !defined(_ALLBSD_SOURCE) || defined(__APPLE__)
+#if (!defined(_ALLBSD_SOURCE) || defined(__APPLE__)) && !defined(__ANDROID__)
 #define ELF_ST_TYPE ELF64_ST_TYPE
 #endif
 
@@ -62,7 +62,7 @@ typedef Elf32_Shdr      Elf_Shdr;
 typedef Elf32_Phdr      Elf_Phdr;
 typedef Elf32_Sym       Elf_Sym;
 
-#if !defined(_ALLBSD_SOURCE) || defined(__APPLE__)
+#if (!defined(_ALLBSD_SOURCE) || defined(__APPLE__)) && !defined(__ANDROID__)
 #define ELF_ST_TYPE ELF32_ST_TYPE
 #endif
 #endif
