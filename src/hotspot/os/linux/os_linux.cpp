@@ -5271,7 +5271,20 @@ bool os::is_thread_cpu_time_supported() {
 // Linux doesn't yet have a (official) notion of processor sets,
 // so just return the system wide load average.
 int os::loadavg(double loadavg[], int nelem) {
+#if defined(__ANDROID__) && __ANDROID_API__ < 29
+  if (nelem < 0) return -1;
+  if (nelem > 3) nelem = 3;
+
+  struct sysinfo si;
+  if (sysinfo(&si) == -1) return -1;
+
+  for (int i = 0; i < nelem; ++i) {
+    loadavg[i] = (double)(si.loads[i]) / (double)(1 << SI_LOAD_SHIFT);
+  }
+  return nelem;
+#else
   return ::getloadavg(loadavg, nelem);
+#endif
 }
 
 // Get the default path to the core file
