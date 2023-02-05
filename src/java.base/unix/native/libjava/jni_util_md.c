@@ -62,7 +62,7 @@ getLastErrorString(JNIEnv *env)
     return (buf[0] != 0) ? JNU_NewStringPlatform(env, buf) : NULL;
 }
 
-JNIEXPORT int JNICALL
+JNIEXPORT char * JNICALL
 getErrorString(int err, char *buf, size_t len)
 {
     if (err == 0 || len < 1) return 0;
