@@ -3912,7 +3912,7 @@ void os::large_page_init() {
 static char* shmat_with_alignment(int shmid, size_t bytes, size_t alignment) {
   assert(is_aligned(bytes, alignment), "Must be divisible by the alignment");
 
-  if (!is_aligned(alignment, SHMLBA)) {
+  if (!is_aligned(alignment, getpagesize())) {
     assert(false, "Code below assumes that alignment is at least SHMLBA aligned");
     return NULL;
   }
@@ -3948,7 +3948,7 @@ static char* shmat_with_alignment(int shmid, size_t bytes, size_t alignment) {
 }
 
 static char* shmat_at_address(int shmid, char* req_addr) {
-  if (!is_aligned(req_addr, SHMLBA)) {
+  if (!is_aligned(req_addr, getpagesize())) {
     assert(false, "Requested address needs to be SHMLBA aligned");
     return NULL;
   }
