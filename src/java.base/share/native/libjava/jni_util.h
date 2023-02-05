@@ -339,7 +339,7 @@ void buildJniFunctionName(const char *sym, const char *cname,
 JNIEXPORT size_t JNICALL
 getLastErrorString(char *buf, size_t len);
 
-JNIEXPORT int JNICALL
+JNIEXPORT char * JNICALL
 getErrorString(int err, char *buf, size_t len);
 
 #ifdef STATIC_BUILD

@@ -61,7 +61,7 @@ getLastErrorString(char *buf, size_t len)
     return strlen(buf);
 }
 
-JNIEXPORT int JNICALL
+JNIEXPORT char * JNICALL
 getErrorString(int err, char *buf, size_t len)
 {
     if (err == 0 || len < 1) return 0;
