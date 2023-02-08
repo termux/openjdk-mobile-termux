@@ -74,12 +74,7 @@ AC_DEFUN_ONCE([LIB_DETERMINE_DEPENDENCIES],
     NEEDS_LIB_FREETYPE=true
   fi
 
-  # Check if alsa is needed
-  if test "x$OPENJDK_TARGET_OS" = xlinux; then
-    NEEDS_LIB_ALSA=true
-  else
-    NEEDS_LIB_ALSA=false
-  fi
+  NEEDS_LIB_ALSA=false
 
   # Check if ffi is needed
   if HOTSPOT_CHECK_JVM_VARIANT(zero); then
