@@ -24,4 +24,3 @@
 JVM_handle_aix_signal
 numa_error
 numa_warn
-sysThreadAvailableStackWithSlack
