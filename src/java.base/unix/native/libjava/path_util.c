@@ -28,8 +28,40 @@
 #if !defined(_ALLBSD_SOURCE)
 #include <alloca.h>
 #endif
+#include <unistd.h>
 
 #include "path_util.h"
+
+/* Remove consecutive duplicate path separators `//` and the trailing
+  path separator if not rootfs `/`. */
+
+char* removeDupSeparator(char *path)
+{
+    if (path == NULL || *path == '\0') {
+        return NULL;
+    }
+
+    char *in = path;
+    char *out = path;
+    char prevChar = 0;
+    int n = 0;
+    for (; *in != '\0'; in++) {
+        // Remove duplicate path separators
+        if (!(*in == '/' && prevChar == '/')) {
+            *(out++) = *in;
+            n++;
+        }
+        prevChar = *in;
+    }
+    *out = '\0';
+
+    // Remove the trailing path separator, except when path equals `/`
+    if (prevChar == '/' && n > 1) {
+        *(--out) = '\0';
+    }
+
+    return path;
+}
 
 /* Check the given name sequence to see if it can be further collapsed.
    Return zero if not, otherwise return the number of names in the sequence. */
@@ -50,7 +82,9 @@ collapsible(char *names)
         n++;
         while (*p) {
             if (*p == '/') {
-                p++;
+                while (*p && *p == '/') {
+                    p++;
+                }
                 break;
             }
             p++;
@@ -73,7 +107,9 @@ splitNames(char *names, char **ix)
         ix[i++] = p++;
         while (*p) {
             if (*p == '/') {
-                *p++ = '\0';
+                while (*p && *p == '/') {
+                    *p++ = '\0';
+                }
                 break;
             }
             p++;
@@ -115,6 +151,9 @@ joinNames(char *names, int nc, char **ix)
 void
 collapse(char *path)
 {
+    // Remove consecutive duplicate path separators '/' regardless of if single or double dot components exist
+    removeDupSeparator(path);
+
     char *names = (path[0] == '/') ? path + 1 : path; /* Preserve first '/' */
     int nc;
     char **ix;
@@ -131,7 +170,7 @@ collapse(char *path)
         /* Find next occurrence of "." or ".." */
         do {
             char *p = ix[i];
-            if (p[0] == '.') {
+            if (p != NULL && p[0] == '.') {
                 if (p[1] == '\0') {
                     dots = 1;
                     break;
@@ -152,14 +191,14 @@ collapse(char *path)
             ix[i] = 0;
         }
         else {
-            /* If there is a preceding name, remove both that name and this
-               instance of ".."; otherwise, leave the ".." as is */
+            /* Remove this instance of ".." and any preceding name if one exists */
             for (j = i - 1; j >= 0; j--) {
                 if (ix[j]) break;
             }
+
+            ix[i] = 0;
             if (j < 0) continue;
             ix[j] = 0;
-            ix[i] = 0;
         }
         /* i will be incremented at the top of the loop */
     }

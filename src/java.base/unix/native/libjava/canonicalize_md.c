@@ -53,7 +53,7 @@ JDK_Canonicalize(const char *orig, char *out, int len)
         return -1;
     }
 
-    if (strlen(orig) > PATH_MAX) {
+    if (strlen(orig) >= PATH_MAX) {
         errno = ENAMETOOLONG;
         return -1;
     }
@@ -64,15 +64,20 @@ JDK_Canonicalize(const char *orig, char *out, int len)
         collapse(out);
         return 0;
     } else {
+        if (errno == EINVAL || errno == ELOOP || errno == ENAMETOOLONG || errno == ENOMEM) {
+            return -1;
+        }
+
         /* Something's bogus in the original path, so remove names from the end
            until either some subpath works or we run out of names */
         char *p, *end, *r = NULL;
-        char path[PATH_MAX + 1];
+        char path[PATH_MAX];
 
-        // strlen(orig) <= PATH_MAX, see above
-        strncpy(path, orig, PATH_MAX);
-        // append null for == case
-        path[PATH_MAX] = '\0';
+        strncpy(path, orig, sizeof(path));
+        if (path[PATH_MAX - 1] != '\0') {
+            errno = ENAMETOOLONG;
+            return -1;
+         }
         end = path + strlen(path);
 
         for (p = end; p > path;) {
@@ -100,6 +105,7 @@ JDK_Canonicalize(const char *orig, char *out, int len)
             }
         }
 
+        size_t nameMax;
         if (r != NULL) {
             /* Append unresolved subpath to resolved subpath */
             int rn = strlen(r);
@@ -108,18 +114,45 @@ JDK_Canonicalize(const char *orig, char *out, int len)
                 errno = ENAMETOOLONG;
                 return -1;
             }
+            nameMax = pathconf(r, _PC_NAME_MAX);
+
             if ((rn > 0) && (r[rn - 1] == '/') && (*p == '/')) {
                 /* Avoid duplicate slashes */
                 p++;
             }
             strcpy(r + rn, p);
             collapse(r);
-            return 0;
         } else {
             /* Nothing resolved, so just return the original path */
+            nameMax = pathconf("/", _PC_NAME_MAX);
             strcpy(out, path);
             collapse(out);
-            return 0;
         }
+
+        // Ensure resolve path length is "< PATH_MAX" and collapse() did not overwrite
+        // terminating null byte
+        char resolvedPath[PATH_MAX];
+        strncpy(resolvedPath, out, sizeof(resolvedPath));
+        if (resolvedPath[PATH_MAX - 1] != '\0') {
+            errno = ENAMETOOLONG;
+            return -1;
+        }
+
+        // Ensure resolve path does not contain any components who length is "> NAME_MAX"
+        // If pathconf call failed with -1 or returned 0 in case of permission denial
+        if (nameMax < 1) {
+            nameMax = NAME_MAX;
+        }
+
+        char *component;
+        char *rest = resolvedPath;
+        while ((component = strtok_r(rest, "/", &rest))) {
+            if (strlen(component) > nameMax) {
+                errno = ENAMETOOLONG;
+                return -1;
+            }
+        }
+
+        return 0;
     }
 }
